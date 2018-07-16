@@ -440,7 +440,8 @@ compileMethodFromDetails(
 
       if (compiler.getOption(TR_BreakAfterCompile))
          {
-         TR::Compiler->debug.breakPoint();
+         traceMsg((&compiler), "BreakAfterCompile Compilation Succeeded\n");
+         //TR::Compiler->debug.breakPoint();
          }
 
       }
