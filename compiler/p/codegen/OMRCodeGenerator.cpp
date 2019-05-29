@@ -3005,6 +3005,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
    switch (typeAddress)
       {
       case TR_DataAddress:
+      case TR_ConstantPool:
          {
          TR_RelocationRecordInformation *recordInfo = ( TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
          recordInfo->data1 = (uintptr_t)node->getSymbolReference();
@@ -3013,7 +3014,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
             firstInstruction,
             (uint8_t *)recordInfo,
-            TR_DataAddress, self());
+            (TR_ExternalRelocationTargetKind)typeAddress, self());
          break;
          }
 

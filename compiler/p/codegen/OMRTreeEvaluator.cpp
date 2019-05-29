@@ -353,8 +353,6 @@ TR::Instruction *fixedSeqMemAccess(TR::CodeGenerator *cg, TR::Node *node, intptr
    return cursor;
    }
 
-
-
 // also handles iiload, iuload, iiuload
 TR::Register *OMR::Power::TreeEvaluator::iloadEvaluator(TR::Node *node, TR::CodeGenerator *cg)
    {
