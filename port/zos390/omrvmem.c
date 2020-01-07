@@ -1331,8 +1331,10 @@ intptr_t
 omrvmem_find_valid_page_size(struct OMRPortLibrary *portLibrary, uintptr_t mode, uintptr_t *pageSize, uintptr_t *pageFlags, BOOLEAN *isSizeSupported)
 {
 	uintptr_t validPageSize = *pageSize;
+	uintptr_t validPageSizePageable = 0;
 	uintptr_t validPageFlags = *pageFlags;
 	BOOLEAN pageSizeFound = FALSE;
+	BOOLEAN pageSizeFoundPageable = FALSE;
 	BOOLEAN useExecutablePages = FALSE;
 
 	Assert_PRT_true_wrapper(0 != validPageFlags);
@@ -1352,15 +1354,26 @@ omrvmem_find_valid_page_size(struct OMRPortLibrary *portLibrary, uintptr_t mode,
 		uintptr_t defaultLargePageSize = 0;
 		uintptr_t defaultLargePageFlags = OMRPORT_VMEM_PAGE_FLAG_NOT_USED;
 
-		/* If the page type is NOT_USED (as with the -Xlp<size> options)
-		 * the legacy behavior is to default to FIXED pages.
-		 */
+		/* If the page type is NOT_USED (as with the -Xlp<size> options) */
 		if (IS_VMEM_PAGE_FLAG_NOT_USED(validPageFlags)) {
-			SET_PAGE_TYPE(validPageFlags, OMRPORT_VMEM_PAGE_FLAG_FIXED);
-		}
 
-		pageSizeFound = isLargePageSizeSupported(portLibrary, validPageSize, validPageFlags);
-		if (TRUE == pageSizeFound) {
+			/* Use the page type of the largest page file available.  */
+			pageSizeFoundPageable = isLargePageSizeSupported(portLibrary, validPageSizePageable, OMRPORT_VMEM_PAGE_FLAG_PAGEABLE);
+			pageSizeFound = isLargePageSizeSupported(portLibrary, validPageSize, OMRPORT_VMEM_PAGE_FLAG_FIXED);
+
+			if (FALSE == pageSizeFoundPageable) {
+				SET_PAGE_TYPE(validPageFlags, OMRPORT_VMEM_PAGE_FLAG_FIXED);
+			}
+			else if (FALSE == pageSizeFound || pageSizeFound <= pageSizeFoundPageable) {
+				SET_PAGE_TYPE(validPageFlags, OMRPORT_VMEM_PAGE_FLAG_PAGEABLE);
+				pageSizeFound = pageSizeFoundPageable;
+			}
+		}
+		else {
+			pageSizeFound = isLargePageSizeSupported(portLibrary, validPageSize, validPageFlags);
+		}
+		
+		if (TRUE == pageSizeFound || TRUE == pageSizePageable) {
 			goto _end;
 		}
 
