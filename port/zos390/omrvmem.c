@@ -1372,8 +1372,8 @@ omrvmem_find_valid_page_size(struct OMRPortLibrary *portLibrary, uintptr_t mode,
 		else {
 			pageSizeFound = isLargePageSizeSupported(portLibrary, validPageSize, validPageFlags);
 		}
-		
-		if (TRUE == pageSizeFound || TRUE == pageSizePageable) {
+
+		if (TRUE == pageSizeFound || TRUE == pageSizeFoundPageable) {
 			goto _end;
 		}
 
