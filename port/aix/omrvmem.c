@@ -982,6 +982,9 @@ omrvmem_find_valid_page_size(struct OMRPortLibrary *portLibrary, uintptr_t mode,
 				}
 			}
 		}
+		else {
+			printf("findValidPageSize: OMRPORT_VMEM_MEMORY_MODE_EXECUTE is high\n");
+		}
 	}
 
 	portLibrary->vmem_default_large_page_size_ex(portLibrary, mode, &defaultLargePageSize, &defaultLargePageFlags);
@@ -990,8 +993,10 @@ omrvmem_find_valid_page_size(struct OMRPortLibrary *portLibrary, uintptr_t mode,
 		validPageFlags = defaultLargePageFlags;
 	} else {
 		if (OMRPORT_VMEM_MEMORY_MODE_EXECUTE == (OMRPORT_VMEM_MEMORY_MODE_EXECUTE & mode)) {
+			printf("findValidPageSize: Getting validpagesize from getDataSegmentPageSize\n");
 			validPageSize = getDataSegmentPageSize(portLibrary);
 			validPageFlags = OMRPORT_VMEM_PAGE_FLAG_NOT_USED;
+			printf("findValidPageSize: validPageSize:%d\n", validPageSize);
 		} else {
 			validPageSize = PPG_vmem_pageSize[0];
 			validPageFlags = PPG_vmem_pageFlags[0];
