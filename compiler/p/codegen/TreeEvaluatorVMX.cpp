@@ -52,11 +52,11 @@
 
 TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::CodeGenerator *cg)
    {
-   TR::Node *addrNode = node->getFirstChild();
-   TR::Node *fillNode = node->getSecondChild();
+   TR::Node *addrNode = node->getChild(0);
+   TR::Node *fillNode = node->getChild(1);
    TR::Node *lenNode = node->getChild(2);
    bool constLength = lenNode->getOpCode().isLoadConst();
-   int32_t length = constLength ? lenNode->getInt() : 0;
+   int64_t length = constLength ? ( lenNode.getType().isInt32() ? lenNode.getInt() : lenNode.getLongInt() ) : 0;
    bool constFill = fillNode->getOpCode().isLoadConst();
 
    const uint32_t fillNodeSize = fillNode->getOpCode().isRef()
@@ -292,7 +292,7 @@ TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::C
          }
 
       //double word store, unroll 8 times
-      generateTrg1Src1ImmInstruction(cg, TR::InstOpCode::srawi_r, node, tempReg, lenReg, 6);
+      generateTrg1Src1ImmInstruction(cg, lenNode->getType().isInt32() ? TR::InstOpCode::srawi_r : TR::InstOpCode::sradi_r, node, tempReg, lenReg, 6);
       generateConditionalBranchInstruction(cg, TR::InstOpCode::beq, node, label2, condReg);
       generateSrc1Instruction(cg, TR::InstOpCode::mtctr, node, tempReg);
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label3); // L3
@@ -310,7 +310,7 @@ TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::C
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label2); // L2
 
       //residual double words
-      generateTrg1Src1ImmInstruction(cg, TR::InstOpCode::srawi_r, node, tempReg, lenReg, 3);
+      generateTrg1Src1ImmInstruction(cg, lenNode->getType().isInt32() ? TR::InstOpCode::srawi_r : TR::InstOpCode::sradi_r, node, tempReg, lenReg, 3);
       generateConditionalBranchInstruction(cg, TR::InstOpCode::beq, node, label5, condReg);
       generateSrc1Instruction(cg, TR::InstOpCode::mtctr, node, tempReg);
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label7); // L7
@@ -405,7 +405,7 @@ TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::C
          }
 
       //word store, unroll 8 times
-      generateTrg1Src1ImmInstruction(cg, TR::InstOpCode::srawi_r, node, tempReg, lenReg, 5);
+      generateTrg1Src1ImmInstruction(cg, lenNode->getType().isInt32() ? TR::InstOpCode::srawi_r : TR::InstOpCode::sradi_r, node, tempReg, lenReg, 5);
       generateConditionalBranchInstruction(cg, TR::InstOpCode::beq, node, label2, condReg);
       generateSrc1Instruction(cg, TR::InstOpCode::mtctr, node, tempReg);
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label3); // L3
@@ -422,7 +422,7 @@ TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::C
       generateTrg1Src1Imm2Instruction(cg, TR::InstOpCode::rlwinm, node, lenReg, lenReg, 0, 31); // Mask
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label2); // L2
 
-      generateTrg1Src1ImmInstruction(cg, TR::InstOpCode::srawi_r, node, tempReg, lenReg, 2);
+      generateTrg1Src1ImmInstruction(cg, lenNode->getType().isInt32() ? TR::InstOpCode::srawi_r : TR::InstOpCode::sradi_r, node, tempReg, lenReg, 2);
       generateConditionalBranchInstruction(cg, TR::InstOpCode::beq, node, label4, condReg);
       generateSrc1Instruction(cg, TR::InstOpCode::mtctr, node, tempReg);
       generateLabelInstruction(cg, TR::InstOpCode::label, node, label10); // L10
