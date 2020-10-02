@@ -56,7 +56,7 @@ TR::Register *OMR::Power::TreeEvaluator::arraysetEvaluator(TR::Node *node, TR::C
    TR::Node *fillNode = node->getChild(1);
    TR::Node *lenNode = node->getChild(2);
    bool constLength = lenNode->getOpCode().isLoadConst();
-   int64_t length = constLength ? ( lenNode.getType().isInt32() ? lenNode.getInt() : lenNode.getLongInt() ) : 0;
+   int64_t length = constLength ? ( lenNode->getType().isInt32() ? lenNode->getInt() : lenNode->getLongInt() ) : 0;
    bool constFill = fillNode->getOpCode().isLoadConst();
 
    const uint32_t fillNodeSize = fillNode->getOpCode().isRef()
