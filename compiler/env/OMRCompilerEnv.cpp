@@ -124,6 +124,7 @@ OMR::CompilerEnv::initializeTargetEnvironment()
    // Initialize the target CPU by querying the host processor
    //
    target.cpu = TR::CPU::detect(TR::Compiler->omrPortLib);
+   target.cpu.applyUserOptions();
 
    // Target major operating system
    //
@@ -165,6 +166,7 @@ OMR::CompilerEnv::initializeRelocatableTargetEnvironment()
    // Initialize the relocatable target CPU by querying the host processor
    //
    relocatableTarget.cpu = TR::CPU::detect(TR::Compiler->omrPortLib);
+   relocatableTarget.cpu.applyUserOptions();
 
    // Target major operating system
    //
