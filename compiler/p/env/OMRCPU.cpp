@@ -101,8 +101,14 @@ OMR::Power::CPU::getSupportsHardware64bitRotate(bool requireRotateToLeft)
 bool
 OMR::Power::CPU::is(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("omrPortLib is null\n");
       return self()->id() == self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+      
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("processor is not P10\n");
 
    return _processorDescription.processor == p;
    }
@@ -110,8 +116,13 @@ OMR::Power::CPU::is(OMRProcessorArchitecture p)
 bool
 OMR::Power::CPU::isAtLeast(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("omrPortLib is null\n");
       return self()->id() >= self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("processor is not P10\n");
 
    return _processorDescription.processor >= p;
    }
@@ -119,8 +130,13 @@ OMR::Power::CPU::isAtLeast(OMRProcessorArchitecture p)
 bool
 OMR::Power::CPU::isAtMost(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("omrPortLib is null\n");
       return self()->id() <= self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("processor is not P10\n");
 
    return _processorDescription.processor <= p;
    }
