@@ -216,6 +216,8 @@ OMR::Power::CPU::applyUserOptions()
    if (_processorDescription.processor == OMR_PROCESSOR_PPC_P10)
       {
       printf("Processor is P10\n");
+      char * ret = feGetEnv("TR_EnableExperimentalPower10Support");
+      printf("Env var retruned value:%s\n", ret);
       static bool enableP10 = feGetEnv("TR_EnableExperimentalPower10Support");
       if (!enableP10)
          {
