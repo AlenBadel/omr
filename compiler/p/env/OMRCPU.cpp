@@ -101,8 +101,13 @@ OMR::Power::CPU::getSupportsHardware64bitRotate(bool requireRotateToLeft)
 bool
 OMR::Power::CPU::is(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("portlib is null\n");
       return self()->id() == self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+   
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("Processor not P10\n");
 
    return _processorDescription.processor == p;
    }
@@ -110,8 +115,13 @@ OMR::Power::CPU::is(OMRProcessorArchitecture p)
 bool
 OMR::Power::CPU::isAtLeast(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("portlib is null\n");
       return self()->id() >= self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("Processor not P10\n");
 
    return _processorDescription.processor >= p;
    }
@@ -119,8 +129,13 @@ OMR::Power::CPU::isAtLeast(OMRProcessorArchitecture p)
 bool
 OMR::Power::CPU::isAtMost(OMRProcessorArchitecture p)
    {
-   if (TR::Compiler->omrPortLib == NULL)
+   if (TR::Compiler->omrPortLib == NULL) {
+      printf("portlib is null\n");
       return self()->id() <= self()->getOldProcessorTypeFromNewProcessorType(p);
+   }
+
+   if (_processorDescription.processor != OMR_PROCESSOR_PPC_P10)
+      printf("Processor not P10\n");
 
    return _processorDescription.processor <= p;
    }
@@ -200,9 +215,11 @@ OMR::Power::CPU::applyUserOptions()
    // OMR once P10 chips become available.
    if (_processorDescription.processor == OMR_PROCESSOR_PPC_P10)
       {
+      printf("Processor is P10\n");
       static bool enableP10 = feGetEnv("TR_EnableExperimentalPower10Support");
       if (!enableP10)
          {
+         printf("Processor Set ot P9\n");
          _processorDescription.processor = OMR_PROCESSOR_PPC_P9;
          _processorDescription.physicalProcessor = OMR_PROCESSOR_PPC_P9;
          }
