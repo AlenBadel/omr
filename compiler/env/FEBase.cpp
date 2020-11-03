@@ -86,7 +86,9 @@ void TR_VerboseLog::writeTimeStamp()
 #undef getenv
 char *feGetEnv(const char *s)
    {
-   return getenv(s);
+   char * ret = getenv(s);
+   printf("In:%s Out:%s\n", s, ret);
+   return ret;
    }
 
 
