@@ -225,5 +225,6 @@ OMR::Power::CPU::applyUserOptions()
          _processorDescription.processor = OMR_PROCESSOR_PPC_P9;
          _processorDescription.physicalProcessor = OMR_PROCESSOR_PPC_P9;
          }
+      fflush(stdout);
       }
    }
