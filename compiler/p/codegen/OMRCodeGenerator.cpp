@@ -1900,12 +1900,15 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
       int16_t typeAddress,
       intptr_t value)
    {
+   printf("addMetaDataForLoadAddressConstantFixed: Adding relocation\n");
    if (value == 0x0)
       return;
 
    if (typeAddress == -1)
       typeAddress = TR_FixedSequenceAddress2;
 
+   printf("addMetaDataForLoadAddressConstantFixed: TypeAddress:%d\n", typeAddress);
+   fflush(stdout);
    TR_FixedSequenceKind seqKind = tempReg ? fixedSequence5 : fixedSequence1;
    TR::Compilation *comp = self()->comp();
 
@@ -2004,6 +2007,8 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    TR::Compilation *comp = self()->comp();
    bool canEmitData = self()->canEmitDataForExternallyRelocatableInstructions();
 
+   printf("loadAddressConstantFixed typeAddress:%d\n", typeAddress);
+   fflush(stdout);
    if (self()->comp()->target().is32Bit())
       {
       return self()->loadIntConstantFixed(node, (int32_t)value, trgReg, cursor, typeAddress);
