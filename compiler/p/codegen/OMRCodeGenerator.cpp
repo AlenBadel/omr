@@ -1900,15 +1900,22 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
       int16_t typeAddress,
       intptr_t value)
    {
-   printf("addMetaDataForLoadAddressConstantFixed: Adding relocation\n");
+   bool isHelperDebug = typeAddress == TR_HelperAddress ? true : false;
+   if (isHelperDebug) {
+      printf("addMetaDataForLoadAddressConstantFixed: Adding relocation\n");
+   }
+      
    if (value == 0x0)
       return;
 
    if (typeAddress == -1)
       typeAddress = TR_FixedSequenceAddress2;
 
-   printf("addMetaDataForLoadAddressConstantFixed: TypeAddress:%d\n", typeAddress);
-   fflush(stdout);
+   if (isHelperDebug) {
+      printf("addMetaDataForLoadAddressConstantFixed: TypeAddress:%d\n", typeAddress);
+      fflush(stdout);
+   }
+
    TR_FixedSequenceKind seqKind = tempReg ? fixedSequence5 : fixedSequence1;
    TR::Compilation *comp = self()->comp();
 
@@ -1978,9 +1985,11 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
 
    if (!relo)
       {
-      printf("addMetaDataForLoadAddressConstantFixed: Adding default relocation\n");
-      printf("addMetaDataForLoadAddressConstantFixed: Value:%d, seqKind:%d, typeAddress:%d\n", value, seqKind, typeAddress);
-      fflush(stdout);
+      if (isHelperDebug) {
+         printf("addMetaDataForLoadAddressConstantFixed: Adding default relocation\n");
+         printf("addMetaDataForLoadAddressConstantFixed: Value:%d, seqKind:%d, typeAddress:%d\n", value, seqKind, typeAddress);
+         fflush(stdout);
+      }
       relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
          firstInstruction,
          (uint8_t *)value,
@@ -1989,15 +1998,19 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          self());
       }
 
-   printf("addMetaDataForLoadAddressConstantFixed: Registering relocation\n");
-   fflush(stdout);
+   if (isHelperDebug) {
+      printf("addMetaDataForLoadAddressConstantFixed: Registering relocation\n");
+      fflush(stdout);
+   }
    self()->addExternalRelocation(
       relo,
       __FILE__,
       __LINE__,
       node);
-   printf("addMetaDataForLoadAddressConstantFixed: Relocation sucessfully registered\n");
-   fflush(stdout);
+   if (isHelperDebug) {
+      printf("addMetaDataForLoadAddressConstantFixed: Relocation sucessfully registered\n");
+      fflush(stdout);
+   }
    }
 
 
