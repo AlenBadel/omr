@@ -1979,6 +1979,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
    if (!relo)
       {
       printf("addMetaDataForLoadAddressConstantFixed: Adding default relocation\n");
+      printf("addMetaDataForLoadAddressConstantFixed: Value:%d, seqKind:%d, typeAddress:%d\n", value, seqKind, typeAddress);
       fflush(stdout);
       relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
          firstInstruction,
