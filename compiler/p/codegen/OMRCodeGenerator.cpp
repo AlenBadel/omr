@@ -1923,6 +1923,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
 
    switch (typeAddress)
       {
+      case TR_AbsoluteHelperAddress:
       case TR_DataAddress:
          {
          TR_RelocationRecordInformation *recordInfo = ( TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
@@ -1935,7 +1936,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
             TR_DataAddress, self());
          break;
          }
-
       case TR_DebugCounter:
          {
          TR::DebugCounterBase *counter = comp->getCounterFromStaticAddress(node->getSymbolReference());
