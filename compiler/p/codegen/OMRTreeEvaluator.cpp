@@ -240,7 +240,6 @@ loadAddressConstant(
       bool isPicSite,
       int16_t typeAddress)
    {
-   printf("A\n");
    if (isRelocatable)
       return cg->loadAddressConstantFixed(node, value, trgReg, cursor, NULL, typeAddress);
 
@@ -259,7 +258,6 @@ loadAddressConstant(
       bool isPicSite,
       int16_t typeAddress)
    {
-   printf("B\n");
    if (cg->comp()->compileRelocatableCode())
       return cg->loadAddressConstantFixed(node, value, trgReg, cursor, NULL, typeAddress);
 

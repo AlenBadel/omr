@@ -1900,21 +1900,17 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
       int16_t typeAddress,
       intptr_t value)
    {
-   bool isHelperDebug = typeAddress == TR_HelperAddress ? true : false;
+   bool isHelperDebug = typeAddress == TR_DataAddress ? true : false;
    if (isHelperDebug) {
-      printf("addMetaDataForLoadAddressConstantFixed: Adding relocation\n");
+      printf("addMetaDataForLoadAddressConstantFixed: Starting relocation for TR_DataAddress\n");
+      fflush(stdout);
    }
-      
+
    if (value == 0x0)
       return;
 
    if (typeAddress == -1)
       typeAddress = TR_FixedSequenceAddress2;
-
-   if (isHelperDebug) {
-      printf("addMetaDataForLoadAddressConstantFixed: TypeAddress:%d\n", typeAddress);
-      fflush(stdout);
-   }
 
    TR_FixedSequenceKind seqKind = tempReg ? fixedSequence5 : fixedSequence1;
    TR::Compilation *comp = self()->comp();
@@ -1923,10 +1919,12 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
 
    switch (typeAddress)
       {
-      case TR_AbsoluteHelperAddress:
       case TR_DataAddress:
          {
          TR_RelocationRecordInformation *recordInfo = ( TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
+         printf("addMetaDataForLoadAddressConstantFixed: Adding TR_DataAddress relocation\n");
+         printf("addMetaDataForLoadAddressConstantFixed: symbolReference(data1):%p, inlinedSiteIndex(data2):%d, seqKind(data3):%d\n", node->getSymbolReference(), node->getInlinedSiteIndex(), seqKind);
+         fflush(stdout);
          recordInfo->data1 = (uintptr_t)node->getSymbolReference();
          recordInfo->data2 = (uintptr_t)node->getInlinedSiteIndex();
          recordInfo->data3 = (uintptr_t)seqKind;
@@ -1954,7 +1952,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          case TR_ClassAddress:
             {
             TR::SymbolReference *symRef = (TR::SymbolReference *)value;
-
             TR_RelocationRecordInformation *recordInfo = (TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
             recordInfo->data1 = (uintptr_t)symRef->getSymbol()->getStaticSymbol()->getStaticAddress();
             recordInfo->data2 = (uintptr_t)TR::SymbolType::typeClass;
@@ -1985,11 +1982,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
 
    if (!relo)
       {
-      if (isHelperDebug) {
-         printf("addMetaDataForLoadAddressConstantFixed: Adding default relocation\n");
-         printf("addMetaDataForLoadAddressConstantFixed: Value:%p, seqKind:%d, typeAddress:%d\n", value, seqKind, typeAddress);
-         fflush(stdout);
-      }
       relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
          firstInstruction,
          (uint8_t *)value,
@@ -1998,15 +1990,12 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          self());
       }
 
-   if (isHelperDebug) {
-      printf("addMetaDataForLoadAddressConstantFixed: Registering relocation\n");
-      fflush(stdout);
-   }
    self()->addExternalRelocation(
       relo,
       __FILE__,
       __LINE__,
       node);
+   
    if (isHelperDebug) {
       printf("addMetaDataForLoadAddressConstantFixed: Relocation sucessfully registered\n");
       fflush(stdout);
@@ -2027,7 +2016,6 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    TR::Compilation *comp = self()->comp();
    bool canEmitData = self()->canEmitDataForExternallyRelocatableInstructions();
 
-   printf("loadAddressConstantFixed typeAddress:%d\n", typeAddress);
    fflush(stdout);
    if (self()->comp()->target().is32Bit())
       {
