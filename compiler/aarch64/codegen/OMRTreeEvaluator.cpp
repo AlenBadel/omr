@@ -345,7 +345,11 @@ loadAddressConstantRelocatable(TR::CodeGenerator *cg, TR::Node *node, intptr_t v
    cursor = generateTrg1ImmInstruction(cg, TR::InstOpCode::movkx, node, trgReg, ((value >> 32) & 0x0000ffff) | (TR::MOV_LSL16 * 2) , cursor);
    cursor = generateTrg1ImmInstruction(cg, TR::InstOpCode::movkx, node, trgReg, (value >> 48) | (TR::MOV_LSL16 * 3) , cursor);
 
-   addMetaDataForLoadAddressConstantFixed(cg, node, firstInstruction, typeAddress, value);
+   if (!comp()->getOption(TR_DisableTOC)) {
+      cg->findOrCreateAddressConstant(&address, TR::Address, cursor, NULL, NULL, NULL, node, isUnloadablePicSite);
+   } else {
+      addMetaDataForLoadAddressConstantFixed(cg, node, firstInstruction, typeAddress, value);
+   }
 
    if (temp == NULL)
       cg->setAppendInstruction(cursor);
