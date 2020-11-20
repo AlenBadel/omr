@@ -791,10 +791,11 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
 
    uint8_t *start = temp;
 
+   printf("Mainline Instructions available to be binaryEncoded\n");
    while (data.cursorInstruction)
       {
       self()->setBinaryBufferCursor(data.cursorInstruction->generateBinaryEncoding());
-
+      printf("Instruction:%p BinaryBufferCursor:%p (Encoding should be the same):%p\n", data.cursorInstruction, self()->getBinaryBufferCursor(), data.cursorInstruction->getBinaryEncoding());
       self()->addToAtlas(data.cursorInstruction);
 
       if (data.cursorInstruction == data.preProcInstruction)
@@ -816,6 +817,7 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
 
    // Create exception table entries for outlined instructions.
    //
+   printf("Binary Encoding for OOL\n");
    if (!self()->comp()->getOption(TR_DisableOOL))
       {
       auto oiIterator = self()->getPPCOutOfLineCodeSectionList().begin();
@@ -823,6 +825,9 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          {
          uint32_t startOffset = (*oiIterator)->getFirstInstruction()->getBinaryEncoding() - self()->getCodeStart();
          uint32_t endOffset   = (*oiIterator)->getAppendInstruction()->getBinaryEncoding() - self()->getCodeStart();
+         printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
+         printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
+         printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
 
          TR::Block * block = (*oiIterator)->getBlock();
          bool needsETE = (*oiIterator)->getFirstInstruction()->getNode()->getOpCode().hasSymbolReference() &&
@@ -832,9 +837,14 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          if (needsETE && block && !block->getExceptionSuccessors().empty())
             block->addExceptionRangeForSnippet(startOffset, endOffset);
 
+         printf("After\n");
+         printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
+         printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
+         printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
          ++oiIterator;
          }
       }
+      printf("Finished Binary Encoding for OOL\n");
    }
 
 void OMR::Power::CodeGenerator::processRelocations()
@@ -1900,6 +1910,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
       int16_t typeAddress,
       intptr_t value)
    {
+
    if (value == 0x0)
       return;
 
@@ -1925,7 +1936,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
             TR_DataAddress, self());
          break;
          }
-
       case TR_DebugCounter:
          {
          TR::DebugCounterBase *counter = comp->getCounterFromStaticAddress(node->getSymbolReference());
@@ -1944,7 +1954,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          case TR_ClassAddress:
             {
             TR::SymbolReference *symRef = (TR::SymbolReference *)value;
-
             TR_RelocationRecordInformation *recordInfo = (TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
             recordInfo->data1 = (uintptr_t)symRef->getSymbol()->getStaticSymbol()->getStaticAddress();
             recordInfo->data2 = (uintptr_t)TR::SymbolType::typeClass;
@@ -1975,6 +1984,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
 
    if (!relo)
       {
+      printf("addMetaDataForLoadAddressConstantFixed: Adding Relocation. seqKind:%d\n", seqKind);
       relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
          firstInstruction,
          (uint8_t *)value,
@@ -1989,7 +1999,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
       __LINE__,
       node);
    }
-
 
 TR::Instruction *
 OMR::Power::CodeGenerator::loadAddressConstantFixed(
@@ -2012,26 +2021,35 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    // load a 64-bit constant into a register with a fixed 5 instruction sequence
    TR::Instruction *temp = cursor;
    TR::Instruction *firstInstruction;
-
+   printf("Cursor:%p\n", cursor);
    if (cursor == NULL)
       cursor = self()->getAppendInstruction();
 
+   // Debug
+   printf("CHelper: canEmitData:%d value:%p\n", canEmitData, value);
    if (tempReg == NULL)
       {
+      printf("CHelper tempReg was null\n");
+      printf("Generated Instruction 0(appending):%p\n", cursor);
       // lis trgReg, upper 16-bits
       cursor = firstInstruction = generateTrg1ImmInstruction(self(), TR::InstOpCode::lis, node, trgReg, canEmitData ? (value>>48) : 0 , cursor);
-
+      printf("Generated Instruction 1:%p\n", cursor);
       // ori trgReg, trgReg, next 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::ori, node, trgReg, trgReg, canEmitData ? ((value>>32) & 0x0000ffff) : 0, cursor);
+      printf("Generated Instruction 2:%p\n", cursor);
       // shiftli trgReg, trgReg, 32
       cursor = generateTrg1Src1Imm2Instruction(self(), TR::InstOpCode::rldicr, node, trgReg, trgReg, 32, CONSTANT64(0xFFFFFFFF00000000), cursor);
+      printf("Generated Instruction 3:%p\n", cursor);
       // oris trgReg, trgReg, next 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::oris, node, trgReg, trgReg, canEmitData ? ((value>>16) & 0x0000ffff) : 0, cursor);
+      printf("Generated Instruction 4:%p\n", cursor);
       // ori trgReg, trgReg, last 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::ori, node, trgReg, trgReg, canEmitData ? (value & 0x0000ffff) : 0, cursor);
+      printf("Generated Instruction 5:%p\n", cursor);
       }
    else
       {
+      printf("CHelper tempReg was not null\n");
       // lis tempReg, bits[0-15]
       cursor = firstInstruction = generateTrg1ImmInstruction(self(), TR::InstOpCode::lis, node, tempReg, canEmitData ? (value>>48) : 0, cursor);
 
@@ -2053,6 +2071,7 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    if (temp == NULL)
       self()->setAppendInstruction(cursor);
 
+   printf("Current Append Instruction(Should be the same as instruction 5):%p\n", self()->getAppendInstruction());
    return(cursor);
    }
 

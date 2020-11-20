@@ -108,7 +108,10 @@ class OMR_EXTENSIBLE Instruction
     * is NULL if this instruction has not been encoded yet.
     */
    uint8_t *getBinaryEncoding() { return _binaryEncodingBuffer; }
-   void setBinaryEncoding(uint8_t *be) { _binaryEncodingBuffer = be; }
+   void setBinaryEncoding(uint8_t *be) { 
+      TR_ASSERT_FATAL(be != NULL, "setBinaryEncoding: Setting Binary Encoding to null");
+      _binaryEncodingBuffer = be;
+      }
 
    uint8_t getBinaryLength() { return _binaryLength; }
    void setBinaryLength(uint8_t length) { _binaryLength = length; }

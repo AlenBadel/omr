@@ -162,7 +162,9 @@ uint8_t TR::ExternalRelocation::collectModifier()
    {
    TR::Compilation *comp = TR::comp();
    uint8_t * relocatableMethodCodeStart = (uint8_t *)comp->getRelocatableMethodCodeStart();
+   printf("collectModifier: relocatableMethodCodeStart:%p\n", relocatableMethodCodeStart);
    uint8_t * updateLocation = getUpdateLocation();
+   printf("collectModifier: updateLocation:%p\n", updateLocation);
 
    int32_t distanceFromStartOfBuffer = updateLocation - relocatableMethodCodeStart;
    int32_t distanceFromStartOfMethod = updateLocation - comp->cg()->getCodeStart();
@@ -272,6 +274,8 @@ void TR::ExternalRelocation::apply(TR::CodeGenerator *codeGen)
    AOTcgDiag1(comp, "TR::ExternalRelocation::apply updateLocation=" POINTER_PRINTF_FORMAT " \n", getUpdateLocation());
    uint8_t * relocatableMethodCodeStart = (uint8_t *)comp->getRelocatableMethodCodeStart();
    getRelocationRecord()->addRelocationEntry((uint32_t)(getUpdateLocation() - relocatableMethodCodeStart));
+   printf("Apply: getUpdateLocation:%p relocatableMethodCodeStart:%p\n", getUpdateLocation(), relocatableMethodCodeStart);
+   //TR_ASSERT_FATAL(getUpdateLocation() != 0, "Update Location is nil");
    }
 
 void TR::ExternalRelocation::trace(TR::Compilation* comp)
@@ -301,8 +305,16 @@ void TR::ExternalRelocation::trace(TR::Compilation* comp)
 
 uint8_t* TR::BeforeBinaryEncodingExternalRelocation::getUpdateLocation()
    {
-   if (NULL == TR::ExternalRelocation::getUpdateLocation())
+   if (NULL == TR::ExternalRelocation::getUpdateLocation()) {
+      #if 0
+      if (getUpdateInstruction()->getBinaryEncoding() == NULL) {
+         printf("I'VE HIT A SNAG. SLEEPING\n");
+         usleep(10000000);
+      }
+      #endif
+      TR_ASSERT_FATAL_WITH_INSTRUCTION(getUpdateInstruction(), getUpdateInstruction()->getBinaryEncoding() != NULL, "BeforeBinaryEncodingExternalRelocation: Binary Encoding Pointer is null.");
       setUpdateLocation(getUpdateInstruction()->getBinaryEncoding());
+   }
    return TR::ExternalRelocation::getUpdateLocation();
    }
 

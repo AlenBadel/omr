@@ -153,7 +153,7 @@ void
 OMR::CodeGenPhase::performProcessRelocationsPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
    TR::Compilation * comp = cg->comp();
-
+   printf("Starting Process Relocation Phase\n");
    if (comp->getPersistentInfo()->isRuntimeInstrumentationEnabled())
       {
       // This must be called before relocations to generate the relocation data for the profiled instructions.
@@ -243,6 +243,7 @@ void
 OMR::CodeGenPhase::performEmitSnippetsPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
    TR::Compilation * comp = cg->comp();
+   printf("Starting Emit Snippet Phase\n");
    phase->reportPhase(EmitSnippetsPhase);
 
    TR::LexicalMemProfiler mp("Emit Snippets", comp->phaseMemProfiler());
@@ -290,6 +291,7 @@ OMR::CodeGenPhase::performEmitSnippetsPhase(TR::CodeGenerator * cg, TR::CodeGenP
 void
 OMR::CodeGenPhase::performBinaryEncodingPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
+   printf("Starting BinaryEncodingPhase\n");
    TR::Compilation * comp = cg->comp();
    phase->reportPhase(BinaryEncodingPhase);
 
@@ -520,6 +522,7 @@ void
 OMR::CodeGenPhase::performInliningReportPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
    TR::Compilation * comp = cg->comp();
+   printf("InliningReportPhase\n");
    if (comp->getOptions()->insertDebuggingCounters()>1)
    TR_DebuggingCounters::inliningReportForMethod(comp);
    }
@@ -539,6 +542,7 @@ OMR::CodeGenPhase::performCleanUpFlagsPhase(TR::CodeGenerator * cg, TR::CodeGenP
 void
 OMR::CodeGenPhase::performFindAndFixCommonedReferencesPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
+   printf("FindAndFixCommendReferencesPhase\n");
    if (!cg->comp()->useRegisterMaps())
       cg->findAndFixCommonedReferences();
    }
@@ -546,6 +550,7 @@ OMR::CodeGenPhase::performFindAndFixCommonedReferencesPhase(TR::CodeGenerator * 
 void
 OMR::CodeGenPhase::performRemoveUnusedLocalsPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
+   printf("RemoveUnusedLocalPhase\n");
    TR::Compilation *comp = cg->comp();
    phase->reportPhase(RemoveUnusedLocalsPhase);
    TR::LexicalMemProfiler mp(phase->getName(), comp->phaseMemProfiler());

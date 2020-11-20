@@ -2449,7 +2449,7 @@ TR::Instruction *TR::PPCTrg1MemInstruction::expandInstruction()
 void TR::PPCD34LabelRelocation::apply(TR::CodeGenerator *cg)
    {
    TR_ASSERT_FATAL_WITH_INSTRUCTION(_instr, getLabel()->getCodeLocation(), "Attempt to relocate against an unencoded label");
-
+   TR_ASSERT_FATAL(getUpdateLocation() != NULL, "PPCD34LabelRelocation:apply update location was null");
    fillFieldD34(
       _instr,
       reinterpret_cast<uint32_t*>(getUpdateLocation()),
@@ -2533,6 +2533,7 @@ uint8_t *TR::PPCVirtualGuardNOPInstruction::generateBinaryEncoding()
 #endif
       }
 
+   printf("PPCVirtualGuardNOPInstruction::generateBinaryEncoding: Setting Binary Encoding instruction:%p\n", cursor);
    setBinaryEncoding(cursor);
    if (cg()->sizeOfInstructionToBePatched(this) == 0 ||
        // AOT needs an explicit nop, even if there are patchable instructions at this site because

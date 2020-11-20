@@ -114,6 +114,7 @@ template <class T> class PPCConstant
          }
       else if (cg->comp()->target().is64Bit())
          {
+         printf("Patching Requestors\n");
          TR_ASSERT_FATAL(_instructionsToPatch.size() % 4 == 0, "Expected groups of 4 requestors");
 
          intptr_t addrHi = cg->hiValue(addr);
@@ -139,6 +140,7 @@ template <class T> class PPCConstant
                }
             else
                {
+               printf("Adding Relocation for Float Addr:%p\n", addr);
                cg->addExternalRelocation(
                   new (cg->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
                      instr1,

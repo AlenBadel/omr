@@ -99,7 +99,7 @@ static inline bool alwaysInlineArrayCopy(TR::CodeGenerator *cg)
 void loadFloatConstant(TR::CodeGenerator *cg, TR::InstOpCode::Mnemonic loadOp, TR::Node *node, TR::DataType type, void *value, TR::Register *trgReg)
    {
    int8_t length;
-
+   printf("Float: loadFloatConstant: Loading Float\n");
    switch (type)
       {
       case TR::Float:
@@ -156,6 +156,7 @@ void loadFloatConstant(TR::CodeGenerator *cg, TR::InstOpCode::Mnemonic loadOp, T
 
       if (tocOffset != PTOC_FULL_INDEX)
          {
+         printf("PTOC Not Full\n");
          TR::Register *tmpReg = NULL;
          TR::MemoryReference *memRef;
          if (tocOffset < LOWER_IMMED || tocOffset > UPPER_IMMED)
@@ -186,6 +187,7 @@ void loadFloatConstant(TR::CodeGenerator *cg, TR::InstOpCode::Mnemonic loadOp, T
          }
       }
 
+   printf("Float: PTOC Not Used\n");
    TR::Register *srcReg = cg->allocateRegister();
    TR::Register *tmpReg = cg->comp()->target().is64Bit() ? cg->allocateRegister() : NULL;
 

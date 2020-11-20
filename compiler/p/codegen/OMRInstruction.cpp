@@ -234,6 +234,7 @@ uint8_t *TR::PPCDepImmSymInstruction::generateBinaryEncoding()
 
    cursor += 4;
    setBinaryLength(cursor - instructionStart);
+   printf("PPCDepImmSymInstruction::generateBinaryEncoding: Setting Binary Encoding for: %p\n", instructionStart);
    setBinaryEncoding(instructionStart);
    cg()->addAccumulatedInstructionLengthError(getEstimatedBinaryLength() - getBinaryLength());
    return cursor;
