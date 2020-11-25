@@ -89,7 +89,7 @@ class Relocation
    Relocation() : _updateLocation(NULL) {}
    Relocation(uint8_t *p) : _updateLocation(p) {
       printf("Relocation: constructor value:%p\n", p);
-      TR_ASSERT_FATAL(p != NULL, "Inserting Null Relocation Address");
+      //TR_ASSERT_FATAL(p != NULL, "Inserting Null Relocation Address");
    }
 
    virtual uint8_t *getUpdateLocation()           {return _updateLocation;}
