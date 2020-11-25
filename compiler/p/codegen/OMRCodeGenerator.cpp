@@ -844,6 +844,17 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          ++oiIterator;
          }
       }
+      auto oiIterator = self()->getPPCOutOfLineCodeSectionList().begin();
+      while (oiIterator != self()->getPPCOutOfLineCodeSectionList().end())
+         {
+         TR::Instruction *currentInstruction = (*oiIterator)->getFirstInstruction();
+         while (currentInstruction) {
+            currentInstruction->generateBinaryEncoding();
+            printf("After Forcing Binary Encoding:%p\n", currentInstruction->getBinaryEncoding());
+            currentInstruction = currentInstruction->getNext();
+         }
+         ++oiIterator;
+         }
       printf("Finished Binary Encoding for OOL\n");
    }
 
