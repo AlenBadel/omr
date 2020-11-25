@@ -844,6 +844,7 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          ++oiIterator;
          }
       }
+      #if 0
       auto oiIterator = self()->getPPCOutOfLineCodeSectionList().begin();
       while (oiIterator != self()->getPPCOutOfLineCodeSectionList().end())
          {
@@ -855,6 +856,7 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          }
          ++oiIterator;
          }
+      #endif
       printf("Finished Binary Encoding for OOL\n");
    }
 
