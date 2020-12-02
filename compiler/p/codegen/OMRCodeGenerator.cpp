@@ -791,11 +791,11 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
 
    uint8_t *start = temp;
 
-   printf("Mainline Instructions available to be binaryEncoded\n");
+   //printf("Mainline Instructions available to be binaryEncoded\n");
    while (data.cursorInstruction)
       {
       self()->setBinaryBufferCursor(data.cursorInstruction->generateBinaryEncoding());
-      printf("Instruction:%p BinaryBufferCursor:%p (Encoding should be the same):%p\n", data.cursorInstruction, self()->getBinaryBufferCursor(), data.cursorInstruction->getBinaryEncoding());
+      //printf("Instruction:%p BinaryBufferCursor:%p (Encoding should be the same):%p\n", data.cursorInstruction, self()->getBinaryBufferCursor(), data.cursorInstruction->getBinaryEncoding());
       self()->addToAtlas(data.cursorInstruction);
 
       if (data.cursorInstruction == data.preProcInstruction)
@@ -817,7 +817,7 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
 
    // Create exception table entries for outlined instructions.
    //
-   printf("Binary Encoding for OOL\n");
+   //printf("Binary Encoding for OOL\n");
    if (!self()->comp()->getOption(TR_DisableOOL))
       {
       auto oiIterator = self()->getPPCOutOfLineCodeSectionList().begin();
@@ -825,9 +825,9 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          {
          uint32_t startOffset = (*oiIterator)->getFirstInstruction()->getBinaryEncoding() - self()->getCodeStart();
          uint32_t endOffset   = (*oiIterator)->getAppendInstruction()->getBinaryEncoding() - self()->getCodeStart();
-         printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
-         printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
-         printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
+         //printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
+         //printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
+         //printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
 
          TR::Block * block = (*oiIterator)->getBlock();
          bool needsETE = (*oiIterator)->getFirstInstruction()->getNode()->getOpCode().hasSymbolReference() &&
@@ -837,10 +837,10 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          if (needsETE && block && !block->getExceptionSuccessors().empty())
             block->addExceptionRangeForSnippet(startOffset, endOffset);
 
-         printf("After\n");
-         printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
-         printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
-         printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
+         //printf("After\n");
+         //printf("Start Instruction:%p End Instruction:%p CodeStart:%p\n", (*oiIterator)->getFirstInstruction(), (*oiIterator)->getAppendInstruction(), self()->getCodeStart());
+         //printf("Binary Coding Start Instruction:%p End Instruction:%p\n", (*oiIterator)->getFirstInstruction()->getBinaryEncoding(), (*oiIterator)->getAppendInstruction()->getBinaryEncoding());
+         //printf("startOffset:%p endOffset:%p\n", startOffset, endOffset);
          ++oiIterator;
          }
       }
@@ -857,7 +857,7 @@ void OMR::Power::CodeGenerator::doBinaryEncoding()
          ++oiIterator;
          }
       #endif
-      printf("Finished Binary Encoding for OOL\n");
+      //printf("Finished Binary Encoding for OOL\n");
    }
 
 void OMR::Power::CodeGenerator::processRelocations()
