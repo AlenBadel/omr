@@ -162,9 +162,7 @@ uint8_t TR::ExternalRelocation::collectModifier()
    {
    TR::Compilation *comp = TR::comp();
    uint8_t * relocatableMethodCodeStart = (uint8_t *)comp->getRelocatableMethodCodeStart();
-   printf("collectModifier: relocatableMethodCodeStart:%p\n", relocatableMethodCodeStart);
    uint8_t * updateLocation = getUpdateLocation();
-   printf("collectModifier: updateLocation:%p\n", updateLocation);
 
    int32_t distanceFromStartOfBuffer = updateLocation - relocatableMethodCodeStart;
    int32_t distanceFromStartOfMethod = updateLocation - comp->cg()->getCodeStart();

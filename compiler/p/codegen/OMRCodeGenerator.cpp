@@ -2034,7 +2034,6 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    // load a 64-bit constant into a register with a fixed 5 instruction sequence
    TR::Instruction *temp = cursor;
    TR::Instruction *firstInstruction;
-   printf("Cursor:%p\n", cursor);
    if (cursor == NULL)
       cursor = self()->getAppendInstruction();
 
@@ -2043,22 +2042,16 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    if (tempReg == NULL)
       {
       printf("CHelper tempReg was null\n");
-      printf("Generated Instruction 0(appending):%p\n", cursor);
       // lis trgReg, upper 16-bits
       cursor = firstInstruction = generateTrg1ImmInstruction(self(), TR::InstOpCode::lis, node, trgReg, canEmitData ? (value>>48) : 0 , cursor);
-      printf("Generated Instruction 1:%p\n", cursor);
       // ori trgReg, trgReg, next 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::ori, node, trgReg, trgReg, canEmitData ? ((value>>32) & 0x0000ffff) : 0, cursor);
-      printf("Generated Instruction 2:%p\n", cursor);
       // shiftli trgReg, trgReg, 32
       cursor = generateTrg1Src1Imm2Instruction(self(), TR::InstOpCode::rldicr, node, trgReg, trgReg, 32, CONSTANT64(0xFFFFFFFF00000000), cursor);
-      printf("Generated Instruction 3:%p\n", cursor);
       // oris trgReg, trgReg, next 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::oris, node, trgReg, trgReg, canEmitData ? ((value>>16) & 0x0000ffff) : 0, cursor);
-      printf("Generated Instruction 4:%p\n", cursor);
       // ori trgReg, trgReg, last 16-bits
       cursor = generateTrg1Src1ImmInstruction(self(), TR::InstOpCode::ori, node, trgReg, trgReg, canEmitData ? (value & 0x0000ffff) : 0, cursor);
-      printf("Generated Instruction 5:%p\n", cursor);
       }
    else
       {
@@ -2084,7 +2077,6 @@ OMR::Power::CodeGenerator::loadAddressConstantFixed(
    if (temp == NULL)
       self()->setAppendInstruction(cursor);
 
-   printf("Current Append Instruction(Should be the same as instruction 5):%p\n", self()->getAppendInstruction());
    return(cursor);
    }
 
