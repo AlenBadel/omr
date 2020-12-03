@@ -91,8 +91,6 @@ class Relocation
 
    virtual uint8_t *getUpdateLocation()           {return _updateLocation;}
    uint8_t *setUpdateLocation(uint8_t *p) {
-      printf("Relocation: setUpdateLocation was:%p now:%p\n", _updateLocation, p);
-      TR_ASSERT_FATAL((_updateLocation != NULL) || (p != NULL), "Replacing with null");
       return (_updateLocation = p);
       }
 

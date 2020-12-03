@@ -153,7 +153,6 @@ void
 OMR::CodeGenPhase::performProcessRelocationsPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
    TR::Compilation * comp = cg->comp();
-   printf("Starting Process Relocation Phase\n");
    if (comp->getPersistentInfo()->isRuntimeInstrumentationEnabled())
       {
       // This must be called before relocations to generate the relocation data for the profiled instructions.
@@ -243,7 +242,6 @@ void
 OMR::CodeGenPhase::performEmitSnippetsPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
    TR::Compilation * comp = cg->comp();
-   printf("Starting Emit Snippet Phase\n");
    phase->reportPhase(EmitSnippetsPhase);
 
    TR::LexicalMemProfiler mp("Emit Snippets", comp->phaseMemProfiler());
