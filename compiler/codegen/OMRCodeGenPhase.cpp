@@ -289,7 +289,6 @@ OMR::CodeGenPhase::performEmitSnippetsPhase(TR::CodeGenerator * cg, TR::CodeGenP
 void
 OMR::CodeGenPhase::performBinaryEncodingPhase(TR::CodeGenerator * cg, TR::CodeGenPhase * phase)
    {
-   printf("Starting BinaryEncodingPhase\n");
    TR::Compilation * comp = cg->comp();
    phase->reportPhase(BinaryEncodingPhase);
 
