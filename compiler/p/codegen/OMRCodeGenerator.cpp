@@ -1934,7 +1934,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          }
 
       case TR_BlockFrequency:
-	 {
+	      {
          TR_RelocationRecordInformation *recordInfo = ( TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
          recordInfo->data1 = (uintptr_t)node->getSymbolReference();
          recordInfo->data2 = (uintptr_t)seqKind;
@@ -1942,6 +1942,17 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
             firstInstruction,
             (uint8_t *)recordInfo,
             TR_BlockFrequency, self());
+            break;
+         }
+
+      case TR_AbsoluteHelperAddress:
+         {
+         relo = new (self()->trHeapMemory()) TR::BeforeBinaryEncodingExternalRelocation(
+            firstInstruction,
+            (uint8_t *)node->getSymbolReference(),
+            (uint8_t *)0x1,
+            TR_AbsoluteHelperAddress,
+            self());
          break;
          }
       }
