@@ -1934,7 +1934,7 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
          }
 
       case TR_BlockFrequency:
-         {
+	      {
          TR_RelocationRecordInformation *recordInfo = ( TR_RelocationRecordInformation *)comp->trMemory()->allocateMemory(sizeof(TR_RelocationRecordInformation), heapAlloc);
          recordInfo->data1 = (uintptr_t)node->getSymbolReference();
          recordInfo->data2 = (uintptr_t)seqKind;
@@ -1955,13 +1955,6 @@ OMR::Power::CodeGenerator::addMetaDataForLoadAddressConstantFixed(
             self());
          break;
          }
-
-      case TR_AbsoluteHelperAddress:
-         {
-         value = (uintptr_t)node->getSymbolReference();
-         break;
-         }
-      }
 
    if (comp->getOption(TR_UseSymbolValidationManager) && !relo)
       {
